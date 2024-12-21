@@ -1,0 +1,463 @@
+CREATE TABLE LOCATION (
+  Location_ID INT PRIMARY KEY,
+  City VARCHAR(50)
+);
+
+INSERT INTO LOCATION (Location_ID, City)
+VALUES (122, 'New York'),
+       (123, 'Dallas'),
+       (124, 'Chicago'),
+       (167, 'Boston');
+
+
+  CREATE TABLE DEPARTMENT (
+  Department_Id INT PRIMARY KEY,
+  Name VARCHAR(50),
+  Location_Id INT,
+  FOREIGN KEY (Location_Id) REFERENCES LOCATION(Location_ID)
+);
+
+
+INSERT INTO DEPARTMENT (Department_Id, Name, Location_Id)
+VALUES (10, 'Accounting', 122),
+       (20, 'Sales', 124),
+       (30, 'Research', 123),
+       (40, 'Operations', 167);
+
+	   CREATE TABLE JOB (
+  Job_ID INT PRIMARY KEY,
+  Designation VARCHAR(50)
+);
+
+
+INSERT  INTO JOB VALUES
+(667, 'CLERK'),
+(668,'STAFF'),
+(669,'ANALYST'),
+(670,'SALES_PERSON'),
+(671,'MANAGER'),
+(672, 'PRESIDENT')
+
+
+CREATE TABLE EMPLOYEE
+(EMPLOYEE_ID INT,
+LAST_NAME VARCHAR(20),
+FIRST_NAME VARCHAR(20),
+MIDDLE_NAME CHAR(1),
+JOB_ID INT FOREIGN KEY
+REFERENCES JOBB(JOB_ID),
+MANAGER_ID INT,
+HIRE_DATE DATE,
+SALARY INT,
+COMM INT,
+DEPARTMENT_ID  INT FOREIGN KEY
+REFERENCES DEPARTMENT(DEPARTMENT_ID))
+
+INSERT INTO EMPLOYEE VALUES
+(7369,'SMITH','JOHN','Q',667,7902,'17-DEC-84',800,NULL,20),
+(7499,'ALLEN','KEVIN','J',670,7698,'20-FEB-84',1600,300,30),
+(7505,'DOYLE','JEAN','K',671,7839,'04-APR-85',2850,NULl,30),
+(7506,'DENNIS','LYNN','S',671,7839,'15-MAY-85',2750,NULL,30),
+(7507,'BAKER','LESLIE','D',671,7839,'10-JUN-85',2200,NULL,40),
+(7521,'WARK','CYNTHIA','D',670,7698,'22-FEB-85',1250,500,30)
+
+SELECT* FROM LOCATION
+SELECT * FROM EMPLOYEE
+3. List all job details.
+4. List all the locations.
+
+=====SIMPLE QUERIES:
+1. List all the employee details
+
+SELECT* FROM [dbo].[EMPLOYEE]
+
+2. List all the department details.
+
+SELECT * FROM [dbo].[DEPARTMENT] 
+
+3. List all job details.
+
+SELECT* FROM [dbo].[JOB]
+
+4. List all the locations.
+
+SELECT* FROM [dbo].[LOCATION]
+
+5. List out the First Name, Last Name, Salary, Commission for all Employees.
+
+SELECT  FIRST_NAME,LAST_NAME, SALARY,COMM FROM [dbo].[EMPLOYEE]
+
+6. List out the Employee ID, Last Name, Department ID for all employees and alias
+Employee ID as "ID of the Employee", Last Name as "Name of the Employee", Department ID as "Dep_id".
+
+SELECT EMPLOYEE_ID AS ID_of_the_Employee ,
+LAST_NAME AS Name_of_the_Employee,
+DEPARTMENT_ID AS Dep_id
+FROM[dbo].[EMPLOYEE] ;
+
+7. List out the annual salary of the employees with their names only.
+
+SELECT SALARY*12 AS ANNUAL_SALARY ,
+CONCAT(first_name, ' ', last_name) AS FULL_NAME
+FROM[dbo].[EMPLOYEE] ;
+
+
+======WHERE CONDITION==========
+
+1. List the details about "Smith".
+SELECT * FROM [dbo].[EMPLOYEE] WHERE LAST_NAME ='SMITH';
+
+2. List out the employees who are working in department 20.
+SELECT * FROM [dbo].[EMPLOYEE] WHERE DEPARTMENT_ID =20
+
+3. List out the employees who are earning salary between 2000 and 3000.
+SELECT * FROM [dbo].[EMPLOYEE] WHERE SALARY BETWEEN 2000 AND 3000;
+
+4. List out the employees who are working in department 10 or 20.
+SELECT * FROM [dbo].[EMPLOYEE] WHERE DEPARTMENT_ID IN( 10 , 20)
+
+5. Find out the employees who are not working in department 10 or 30.
+SELECT * FROM [dbo].[EMPLOYEE] WHERE DEPARTMENT_ID NOT IN( 10 , 20)
+
+6. List out the employees whose name starts with 'L'.
+SELECT * FROM [dbo].[EMPLOYEE] WHERE FIRST_NAME  LIKE 'L%'
+
+7. List out the employees whose name starts with 'L' and ends with 'E'.
+SELECT * FROM [dbo].[EMPLOYEE] WHERE FIRST_NAME LIKE 'L%E'  
+
+8. List out the employees whose name length is 4 and start with 'J'.
+SELECT * FROM  EMPLOYEEE WHERE  FIRST_NAME LIKE 'J___' AND LEN(FIRST_NAME)= 4
+
+9. List out the employees
+who are working in department 30 and draw the salaries more than 2500.
+SELECT * FROM [dbo].[EMPLOYEE] WHERE DEPARTMENT_ID =30 AND SALARY >2500
+
+10. List out the employees who are not receiving commission.
+SELECT * FROM [dbo].[EMPLOYEE] WHERE COMM IS NULL
+
+
+====ORDER BY CLAUSE:==========
+
+1. List out the Employee ID and Last Name in 
+ascending order based on the Employee ID.
+SELECT Employee_ID,LAST_NAME FROM [dbo].[EMPLOYEE] ORDER BY EMPLOYEE_ID
+
+2. List out the Employee ID and Name in descending 
+order based on salary.
+SELECT EMPLOYEE_ID,CONCAT(first_name, ' ', last_name) AS FULL_NAME,SALARY 
+FROM [dbo].[EMPLOYEE] ORDER BY SALARY DESC
+
+3. List out the employee details according to their
+Last Name in ascending-order.
+SELECT * FROM [dbo].[EMPLOYEE] ORDER BY LAST_NAME
+
+4. List out the employee details according to their 
+Last Name in ascending order and then Department ID in descending order.
+SELECT employee_id, first_name, last_name FROM [dbo].[EMPLOYEE]  ORDER BY LAST_NAME ,DEPARTMENT_ID DESC;
+
+====GROUP BY and HAVING Clause:======
+
+
+1. List out the department wise maximum salary,
+minimum salary and average salary of the employees.
+SELECT DEPARTMENT_ID,
+MAX(SALARY) AS MAX_SALARY,
+MIN(SALARY) AS MIN_SALARY,
+AVG(SALARY) AS AVG_SALARY
+FROM [dbo].[EMPLOYEE] GROUP BY DEPARTMENT_ID
+
+2. List out the job wise maximum salary,
+minimum salary and average salary of the employees.
+SELECT JOB_ID,
+MAX(SALARY ) AS MAX_SALARY,
+AVG(SALARY) AS AVG_SALARY
+FROM [dbo].[EMPLOYEE] GROUP BY JOB_ID
+
+3. List out the number of employees
+who joined each month in ascending order.
+
+SELECT 
+    FORMAT(hire_date, 'MMMM yyyy') AS month_year,
+    COUNT(*) AS number_of_employees
+FROM [dbo].[EMPLOYEE]
+GROUP BY 
+    FORMAT(hire_date, 'MMMM yyyy')
+ORDER BY 
+    MIN(hire_date) ASC;
+
+
+
+
+4. List out the number of employees for each
+month and year in ascending order based on the year and month.
+SELECT YEAR(hire_date) AS year, MONTH(hire_date) AS month, COUNT(*) AS number_of_employees
+FROM [dbo].[EMPLOYEE]
+GROUP BY YEAR(hire_date), MONTH(hire_date)
+ORDER BY year ASC, month ASC;
+
+5. List out the Department ID having at least four employees.
+SELECT DEPARTMENT_ID,
+COUNT(*) AS NumberOfEmployees
+FROM [dbo].[EMPLOYEE] GROUP BY 
+DEPARTMENT_ID HAVING COUNT(*) >= 4
+
+6. How many employees joined in February month.
+select count(*) no_of_employee from [dbo].[EMPLOYEE] where month(HIRE_DATE) =4
+
+
+7. How many employees joined in May or June month.
+select * from EMPLOYEEE
+SELECT COUNT(*) AS NumberOfEmployees
+FROM [dbo].[EMPLOYEE]
+WHERE MONTH(HIRE_DATE) IN (5, 6);
+
+8. How many employees joined in 1985?
+select count(*) as no_of_emp from Employeee where year(hire_date) = 1985
+
+9. How many employees joined each month in 1985?
+
+SELECT 
+    MONTH(hire_date) AS Month, 
+    COUNT(*) AS NumberOfEmployees
+FROM [dbo].[EMPLOYEE]
+WHERE YEAR(hire_date) = 1985
+GROUP BY MONTH(hire_date)
+ORDER BY Month ASC;
+
+10. How many employees were joined in April 1985?
+
+select month(hire_date) as month, count(*) as no_of_employee from [dbo].[EMPLOYEE]
+where year(hire_date) =1985 and month(HIRE_DATE) =4 
+group by month(hire_date)
+
+11. Which is the Department ID having greater than or
+equal to 3 employees joining in April 1985?
+
+select DEPARTMENT_id , count(*)  as no_of_emp from  [dbo].[EMPLOYEE]
+where year(HIRE_DATE) =1985 and month(hire_date) =4
+group by DEPARTMENT_ID having  count(*) >= 3;
+
+
+========joins:===========
+select* from employeee
+select* from department
+
+1. List out employees with their department names.
+select b.employee_id ,concat(b.first_name,' ',b.last_name) as full_name,
+a.name from [dbo].[EMPLOYEE] b join department a
+on a.department_id = b.department_id;
+
+2. Display employees with their designations.
+select b.employee_id ,concat(b.first_name,' ',b.last_name) as full_name,
+a.designation from [dbo].[EMPLOYEE] b join  job a
+ on a.job_id = b.job_id
+
+3. Display the employees with their department names and city.
+select concat(b.first_name,' ',b.last_name) as full_name,
+a.name ,c.city from [dbo].[EMPLOYEE] b join department a 
+on b.department_id = a.department_id join
+location c  on c.location_id = a.location_id;
+
+
+4. How many employees are working in different departments? 
+Display with department names.
+
+SELECT d.name, COUNT(e.Employee_ID) AS NumberOfEmployees
+FROM [dbo].[EMPLOYEE] e
+JOIN Department d ON e.Department_ID = d.Department_ID
+GROUP BY d.name
+ORDER BY d.name ASC;
+
+5. How many employees are working in the sales department?
+select a.name, count(b.employee_id) as no_of_emp from [dbo].[EMPLOYEE] b 
+join  department a on a.department_id = b.department_id 
+where name = 'sales'
+group by a.name
+
+6. Which is the department having greater than or equal to 3 employees
+and display the department names in ascending order.
+select a.name,count(b.employee_id)as  no_of_employee 
+from [dbo].[EMPLOYEE] b join department a
+ on a.department_id = b.department_id
+  group by a.name
+ HAVING COUNT(b.Employee_ID) >=3
+ order by a.name 
+
+7. How many employees are working in 'Dallas'?
+
+SELECT COUNT(A.EMPLOYEE_ID) AS NO_OF_EMP ,
+B.CITY FROM [dbo].[EMPLOYEE] A JOIN DEPARTMENT C
+ON A.DEPARTMENT_ID = C.DEPARTMENT_ID JOIN
+[dbo].[LOCATION] B ON B.LOCATION_ID  = C.LOCATION_ID
+WHERE CITY ='DALLAS'
+GROUP BY B.CITY
+
+
+8. Display all employees in sales or operation departments.
+
+SELECT A.EMPLOYEE_ID ,B.NAME FROM[dbo].[EMPLOYEE]  A JOIN [dbo].[DEPARTMENT] B
+ON A.DEPARTMENT_ID = B.Department_Id
+WHERE B.NAME IN ('SALES','operation')
+
+==============CONDITIONAL STATEMENT=====
+1. Display the employee details with salary grades.
+Use conditional statement to create a grade column.
+SELECT
+CONCAT(FIRST_NAME,' ' ,LAST_NAME) AS FULL_NAME,
+SALARY,
+CASE
+	 WHEN SALARY>= 2500 THEN'A'
+	 WHEN SALARY >=1600 THEN 'B'
+	 WHEN SALARY >=1200 THEN 'C'
+	 ELSE  'E'
+END AS GRADE
+FROM [dbo].[EMPLOYEE]
+
+
+
+2. List out the number of employees grade wise. 
+Use conditional statement to create a grade column.
+
+SELECT
+EMPLOYEE_ID ,
+CASE
+	WHEN EMPLOYEE_ID>=7500 THEN 'A'
+	ELSE 'B'
+END AS  GRADE
+FROM EMPLOYEEE
+
+SELECT
+CASE  
+ WHEN SALARY>= 2500 THEN'A'
+	 WHEN SALARY >=1600 THEN 'B'
+	 WHEN SALARY >=1200 THEN 'C'
+	 ELSE  'E'
+END AS Grade,
+COUNT(*) AS NumberOfEmployees 
+FROM [dbo].[EMPLOYEE] GROUP BY SALARY ORDER BY GRADE
+
+3. Display the employee salary grades and the number 
+of employees between 2000 to 5000 range of salary.
+SELECT
+CONCAT(FIRST_NAME,' ' ,LAST_NAME) AS FULL_NAME,
+SALARY,
+CASE
+	 WHEN SALARY>= 2500 THEN'A'
+	 WHEN SALARY >=1600 THEN 'B'
+	 WHEN SALARY >=1200 THEN 'C'
+	 ELSE  'E'
+END AS GRADE
+FROM EMPLOYEEE
+WHERE SALARY BETWEEN  2000 AND 5000
+
+
+=============Subqueries:
+1. Display the employees list who got the maximum salary.
+SELECT CONCAT(FIRST_NAME ,' ',LAST_NAME) AS NAME,
+SALARY from [dbo].[EMPLOYEE]
+where salary=( select max(salary) from [dbo].[EMPLOYEE]);
+
+
+2. Display the employees who are working in the sales department.
+SELECT CONCAT(a.FIRST_NAME ,' ',a.LAST_NAME) AS name,b.name
+from [dbo].[EMPLOYEE] a join [dbo].[DEPARTMENT] b on a.Department_Id =b.department_id
+where b.name =(select name from [dbo].[DEPARTMENT] b  where b.name ='sales') 
+
+
+3. Display the employees who are working as 'Clerk'.
+
+select
+CONCAT(a.FIRST_NAME ,' ',a.LAST_NAME) AS name,
+a.salary,
+b.designation,a.hire_date from [dbo].[EMPLOYEE] a  join 
+[dbo].[JOB] b on a.job_id = b.job_id
+where b.designation = (select b.designation from [dbo].[JOB] b where b.designation ='clerk')
+
+
+4. Display the list of employees who are living in 'Boston'.
+
+SELECT
+	A.EMPLOYEE_ID,
+    CONCAT(A.FIRST_NAME, ' ', A.LAST_NAME) AS NAME,
+    C.CITY
+FROM
+    [dbo].[EMPLOYEE] A
+    JOIN [dbo].[DEPARTMENT] B ON A.DEPARTMENT_ID = B.DEPARTMENT_ID
+    JOIN [dbo].[LOCATION] C ON B.LOCATION_ID = C.LOCATION_ID
+WHERE
+    C.CITY = (SELECT CITY FROM [dbo].[LOCATION] WHERE CITY = 'BOSTON');
+
+
+5. Find out the number of employees working in the sales department.
+select
+	A.EMPLOYEE_ID,
+	CONCAT(FIRST_NAME,' ',LAST_NAME) AS NAME,
+	B.NAME AS DEPARTMENT
+FROM 
+	 [dbo].[EMPLOYEE]A 
+	JOIN [dbo].[DEPARTMENT] B ON A.DEPARTMENT_ID = B.Department_Id
+WHERE B.NAME=(SELECT  B.NAME FROM [dbo].[DEPARTMENT] B  WHERE NAME='SALES')
+
+
+select * from [dbo].[EMPLOYEE]
+select * from [dbo].[JOB]
+select * from [dbo].[LOCATION]
+
+6. Update the salaries of employees who are working as clerks on the basis of 10%
+
+UPDATE  [dbo].[EMPLOYEE]
+SET salary = salary * 1.10
+WHERE  employee_id IN (
+    SELECT employee_id
+    FROM  [dbo].[EMPLOYEE] a join  [dbo].[JOB] b
+	on a.job_id = b.job_id
+    WHERE b.designation = 'Clerk'
+);
+
+
+.
+7. Display the second highest salary drawing employee details.
+
+SELECT *
+FROM [dbo].[EMPLOYEE]
+WHERE salary = (
+    SELECT MAX(salary)
+    FROM [dbo].[EMPLOYEE]
+    WHERE salary < (
+        SELECT MAX(salary)
+        FROM [dbo].[EMPLOYEE]
+    )
+);
+
+
+
+
+8. List out the employees who earn more than every employee in department 30.
+SELECT *
+FROM [dbo].[EMPLOYEE]
+WHERE salary > (
+    SELECT MAX(salary)
+    FROM [dbo].[EMPLOYEE]
+    WHERE department_id = 30
+);
+
+9. Find out which department has no employees.
+SELECT d.department_id, j.designation
+FROM[dbo].[EMPLOYEE]  d
+LEFT JOIN [dbo].[job] j ON d.job_id = j.job_id
+WHERE d.employee_id IS NULL;
+
+
+10. Find out the employees who earn greater than the average salary for their department.
+
+SELECT e.employee_id, e.first_name, e.salary, e.department_id
+FROM [dbo].[EMPLOYEE] e
+JOIN (
+    SELECT department_id, AVG(salary) as avg_salary
+    FROM [dbo].[EMPLOYEE] e
+    GROUP BY department_id
+) avg_dept
+ON e.department_id = avg_dept.department_id
+WHERE e.salary > avg_dept.avg_salary;
+
+
